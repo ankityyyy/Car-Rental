@@ -1,0 +1,38 @@
+import express from 'express';
+import mongoose from 'mongoose';
+const app=express();
+import dotenv from 'dotenv';
+ dotenv.config();
+let dbUrl="mongodb://127.0.0.1:27017/car"
+import ExpressError from "../src/utils/ExpressError.js"
+import userRoutes from "../src/routes/user.js";
+import { StatusCodes } from "http-status-codes";
+
+
+ async function Main(){
+      try{
+           await mongoose.connect(dbUrl);
+            console.log("Connection successful");
+      }catch(err){
+           console.log("MongoDB Connection Error",err);
+      }
+ }
+ 
+ Main()
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+ app.use("/user/v1/api",userRoutes);
+
+ app.use((req,res, next)=>{
+   next(new ExpressError("page not found",StatusCodes.BAD_REQUEST))
+ })
+ 
+ app.use((err, req, res, next) => {
+     const statusCode = err.statusCode || 500;
+     const message = err.message || "Something went wrong";
+     res.status(statusCode).json({ message });
+   });
+
+ app.listen("2000",(req,res)=>{
+      console.log("app is listen on port no :2000");
+ })
