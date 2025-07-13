@@ -9,4 +9,4 @@ import {userSchemaReigster,userSchemaLogin } from "../joiSchema/user.js"
 router.post("/register",validate(userSchemaReigster),wrapAsync(registerUser))
 router.post("/login",validate(userSchemaLogin),wrapAsync(loginUser));
 
-export default router;
+export default router; 
