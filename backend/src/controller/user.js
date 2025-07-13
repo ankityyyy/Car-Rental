@@ -1,7 +1,7 @@
 import User from "../models/user.js";
 import jwt from "jsonwebtoken";
 import { StatusCodes } from "http-status-codes";
-import ExpressError from "../utils/ExpressError.js"
+import ExpressError from "../utils/ExpressError.js";
 import bcrypt from "bcrypt";
 
 export const registerUser = async (req, res, next) => {
@@ -16,7 +16,7 @@ export const registerUser = async (req, res, next) => {
   const user = new User({
     name,
     email,
-    phone, 
+    phone,
     password: hashedPassword,
     provider: "local",
     role,
@@ -26,29 +26,32 @@ export const registerUser = async (req, res, next) => {
   return res.status(StatusCodes.CREATED).json({ message: "User Registered" });
 };
 
-export const loginUser=async(req,res,next)=>{
-     let { password, email } = req.body;
-     const  foundUser= await User.findOne({email});
-        if (!foundUser) {
-            return next(new ExpressError( "Username is wrong",StatusCodes.NOT_FOUND));
-          }
-
-           const isPasswordCorrect = await bcrypt.compare(password, foundUser.password);
-              if (!isPasswordCorrect) {
-               return next(new ExpressError( "Password is worng",StatusCodes.NOT_FOUND));
-             }
-          
-            //  const token = crypto.randomBytes(20).toString("hex");
-            //    foundUser.token = token;
-
-            const token = jwt.sign({ id: foundUser._id }, process.env.JWT_SECRET, {
-      expiresIn: "7d"
-    });               
-             
-          
-               return res.status(StatusCodes.OK).json({ token ,id: foundUser._id,
-        name: foundUser.name,
-        email: foundUser.email,
-        role: foundUser.role})
-
+export const loginUser = async (req, res, next) => {
+  let { password, email } = req.body;
+  const foundUser = await User.findOne({ email });
+  if (!foundUser) {
+  throw new ExpressError("Email is not registered", StatusCodes.NOT_FOUND);
 }
+
+if (!isPasswordCorrect) {
+  throw new ExpressError("Invalid password", StatusCodes.UNAUTHORIZED);
+}
+
+
+  //  const token = crypto.randomBytes(20).toString("hex");
+  //    foundUser.token = token;
+
+  const token = jwt.sign({ id:foundUser._id, role:foundUser.role, email:foundUser.email }, process.env.JWT_SECRET, {
+    expiresIn: "7d",
+  });
+
+  return res
+    .status(StatusCodes.OK)
+    .json({
+      token,
+      id: foundUser._id,
+      name:foundUser.name,
+      email: foundUser.email,
+      role: foundUser.role,
+    });
+};
