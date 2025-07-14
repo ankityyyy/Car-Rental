@@ -41,7 +41,7 @@ if (!isPasswordCorrect) {
   //  const token = crypto.randomBytes(20).toString("hex");
   //    foundUser.token = token;
 
-  const token = jwt.sign({ id:foundUser._id, role:foundUser.role, email:foundUser.email }, process.env.JWT_SECRET, {
+  const token = jwt.sign({ id:foundUser._id, role:foundUser.role,  name:foundUser.name, email:foundUser.email }, process.env.JWT_SECRET, {
     expiresIn: "7d",
   });
 
