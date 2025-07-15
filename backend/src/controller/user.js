@@ -33,6 +33,7 @@ export const loginUser = async (req, res, next) => {
   throw new ExpressError("Email is not registered", StatusCodes.NOT_FOUND);
 }
 
+const isPasswordCorrect = await bcrypt.compare(password, foundUser.password);
 if (!isPasswordCorrect) {
   throw new ExpressError("Invalid password", StatusCodes.UNAUTHORIZED);
 }
