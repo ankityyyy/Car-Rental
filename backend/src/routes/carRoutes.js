@@ -3,10 +3,12 @@ const router = express.Router();
 import { getAllCar,getCarById,addCar} from "../controller/carController.js"
 import wrapAsync from "../utils/wrapAsync.js"
 import {roleMiddleware} from '../middleware/rolebasedMiddleWare.js';
+import validate from "../middleware/userMiddleware.js";
+import {carAddSchema} from "../joiSchema/carJoiSchema.js"
 
 
 router.get("/",wrapAsync(getAllCar));
 router.get("/:id",wrapAsync(getCarById));
-router.post('/new',roleMiddleware("admin", "owner"),wrapAsync(addCar));
+router.post('/new',validate(carAddSchema),roleMiddleware("admin", "owner"),wrapAsync(addCar));
 
 export default router;
