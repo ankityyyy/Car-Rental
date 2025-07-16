@@ -73,3 +73,28 @@ export const addCar = async (req, res, next) => {
     car:savedCar,
   });
 };
+
+
+export const editCarData=async(req,res,next)=>{
+  let {id}=req.params;
+   const foundUser = req.user;
+
+  let foundCar=await car.findById(id);
+
+  if(!foundCar){
+    return next(new ExpressError("car is not found", StatusCodes.BAD_REQUEST))
+  }
+
+  if(foundUser.role ==="owner" && foundCar.owner.toString()!==foundUser._id.toString()){
+    return next(new ExpressError("You are not authorized to update this product",StatusCodes.FORBIDDEN ))
+  }
+
+  const updatedCar = await car.findByIdAndUpdate(id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  return res.status(StatusCodes.CREATED).json({message:"Car updated successfully"})
+
+
+}
