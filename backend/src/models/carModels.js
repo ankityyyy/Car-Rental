@@ -63,7 +63,7 @@ const carSchema = new mongoose.Schema({
   },
   image: {
     filename: { type: String },
-    url: { type: String, default: "uploads/default.jpg" },
+    url: { type: String, required: true, default: "uploads/default.jpg" },
   },
   owner:{
     
