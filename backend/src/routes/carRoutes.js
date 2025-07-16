@@ -10,5 +10,6 @@ import {carAddSchema} from "../joiSchema/carJoiSchema.js"
 router.get("/",wrapAsync(getAllCar));
 router.get("/:id",wrapAsync(getCarById));
 router.post('/new',validate(carAddSchema),roleMiddleware("admin", "owner"),wrapAsync(addCar));
+router.put("/:id",wrapAsync(editCarData));
 
 export default router;
