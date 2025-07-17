@@ -98,3 +98,23 @@ export const editCarData=async(req,res,next)=>{
 
 
 }
+
+export const deleteCar=async(req,res,next)=>{
+  let {id}=req.params;
+  const foundUser = req.user;
+
+  let foundCar=await car.findById(id);
+
+  if(!foundCar){
+    return next(new ExpressError("car is not found", StatusCodes.BAD_REQUEST))
+  }
+
+  if(foundUser.role ==="owner" && foundCar.owner.toString()!==foundUser._id.toString()){
+    return next(new ExpressError("You are not authorized to update this product",StatusCodes.FORBIDDEN ))
+  }
+
+  await car.findByIdAndDelete(id);
+
+  return res.status(StatusCodes.OK).json({message:"Car deleted successfully"})
+
+}
