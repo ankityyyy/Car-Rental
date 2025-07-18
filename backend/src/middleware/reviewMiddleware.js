@@ -53,7 +53,7 @@ export const checkUser=async(req,res,next)=>{
       req.user = foundUser; 
       next();
     } catch (err) {
-      console.error(err);
+     
       return res
         .status(StatusCodes.UNAUTHORIZED)
         .json({ message: "Invalid or expired token" });
