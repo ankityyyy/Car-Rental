@@ -90,46 +90,48 @@ export const carAddSchema = Joi.object({
       "any.only": "transmission must be one of manual or automatic"
     }),
 
-  coordinates: Joi.array()
-    .items(Joi.number().required())
-    .length(2)
-    .required()
-    .messages({
-      "any.required": "coordinates are required",
-      "array.base": "coordinates must be an array of two numbers",
-      "array.length": "coordinates must have exactly 2 items"
+  location: Joi.object({
+    type: Joi.string().valid("Point").default("Point"),
+    coordinates: Joi.array()
+      .items(Joi.number().required())
+      .length(2)
+      .required()
+      .messages({
+        "any.required": "coordinates are required",
+        "array.base": "coordinates must be an array of two numbers",
+        "array.length": "coordinates must have exactly 2 items"
+      }),
+    address: Joi.string().required().messages({
+      "any.required": "address is required",
+      "string.base": "address must be a string"
     }),
-
-  address: Joi.string().required().messages({
-    "any.required": "address is required",
-    "string.base": "address must be a string"
-  }),
-
-  city: Joi.string().required().messages({
-    "any.required": "city is required",
-    "string.base": "city must be a string"
-  }),
-
-  state: Joi.string().required().messages({
-    "any.required": "state is required",
-    "string.base": "state must be a string"
-  }),
-
-  country: Joi.string().required().messages({
-    "any.required": "country is required",
-    "string.base": "country must be a string"
+    city: Joi.string().required().messages({
+      "any.required": "city is required",
+      "string.base": "city must be a string"
+    }),
+    state: Joi.string().required().messages({
+      "any.required": "state is required",
+      "string.base": "state must be a string"
+    }),
+    country: Joi.string().required().messages({
+      "any.required": "country is required",
+      "string.base": "country must be a string"
+    }),
+  }).required().messages({
+    "any.required": "location is required",
+    "object.base": "location must be an object with coordinates and address details"
   }),
 
   image: Joi.object({
-  filename: Joi.string().optional(),
-  url: Joi.string().uri().required().messages({
-    "any.required": "image URL is required",
-    "string.uri": "image URL must be a valid URI",
+    filename: Joi.string().optional(),
+    url: Joi.string().uri().required().messages({
+      "any.required": "image URL is required",
+      "string.uri": "image URL must be a valid URI",
+    }),
+  }).required().messages({
+    "any.required": "image field is required",
+    "object.base": "image must be an object with filename and url",
   }),
-}).required().messages({
-  "any.required": "image field is required",
-  "object.base": "image must be an object with filename and url",
-}),
 
 });
 
