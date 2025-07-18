@@ -132,3 +132,94 @@ export const carAddSchema = Joi.object({
 }),
 
 });
+
+
+export const updateCarSchema = Joi.object({
+  title: Joi.string().trim().messages({
+    "string.base": "title must be a string"
+  }),
+
+  brand: Joi.string().trim().messages({
+    "string.base": "brand must be a string"
+  }),
+
+  model: Joi.string().trim().messages({
+    "string.base": "model must be a string"
+  }),
+
+  pricingType: Joi.string()
+    .valid("perDay", "perKm", "custom")
+    .messages({
+      "any.only": "pricingType must be one of perDay, perKm, or custom"
+    }),
+
+  pricePerDay: Joi.number()
+    .when("pricingType", {
+      is: "perDay",
+      then: Joi.required(),
+      otherwise: Joi.optional()
+    })
+    .messages({
+      "any.required": "pricePerDay is required when pricingType is perDay",
+      "number.base": "pricePerDay must be a number"
+    }),
+
+  pricePerKm: Joi.number()
+    .when("pricingType", {
+      is: "perKm",
+      then: Joi.required(),
+      otherwise: Joi.optional()
+    })
+    .messages({
+      "any.required": "pricePerKm is required when pricingType is perKm",
+      "number.base": "pricePerKm must be a number"
+    }),
+
+  customPrice: Joi.number()
+    .when("pricingType", {
+      is: "custom",
+      then: Joi.required(),
+      otherwise: Joi.optional()
+    })
+    .messages({
+      "any.required": "customPrice is required when pricingType is custom",
+      "number.base": "customPrice must be a number"
+    }),
+
+  customDescription: Joi.string()
+    .when("pricingType", {
+      is: "custom",
+      then: Joi.optional(),
+      otherwise: Joi.forbidden()
+    }),
+
+  availability: Joi.boolean().messages({
+    "boolean.base": "availability must be a boolean"
+  }),
+
+  seats: Joi.number().messages({
+    "number.base": "seats must be a number"
+  }),
+
+  fuelType: Joi.string()
+    .valid("petrol", "diesel", "electric")
+    .messages({
+      "any.only": "fuelType must be one of petrol, diesel, or electric"
+    }),
+
+  transmission: Joi.string()
+    .valid("manual", "automatic")
+    .messages({
+      "any.only": "transmission must be one of manual or automatic"
+    }),
+
+  image: Joi.object({
+    filename: Joi.string().optional(),
+    url: Joi.string().uri().required().messages({
+      "any.required": "image URL is required",
+      "string.uri": "image URL must be a valid URI",
+    }),
+  }).messages({
+    "object.base": "image must be an object with filename and url",
+  }),
+});
