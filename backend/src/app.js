@@ -10,6 +10,7 @@ import { StatusCodes } from "http-status-codes";
 import passport from "./config/passport.js";
 import googleRoute from "./routes/google.js";
 import carRoute from "./routes/carRoutes.js";
+import carReviewRoute from "./routes/reviewRoutes.js"
 
 async function Main() {
   try {
@@ -34,6 +35,7 @@ app.get("/",(req,res)=>{
 app.use("/user/v1/api", userRoutes);
 app.use("/user/v1/api",googleRoute);
 app.use("/car/v1/api",carRoute);
+app.use("/car/review/v1/api",carReviewRoute);
 
 app.use((req, res, next) => {
   next(new ExpressError("page not found", StatusCodes.BAD_REQUEST));
