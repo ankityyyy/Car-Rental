@@ -7,9 +7,10 @@ import validate from "../middleware/userMiddleware.js";
 import {reviewJoiSchema,updateReviewJoiSchema} from "../joiSchema/reviewJoiSchema.js"
 
 
-router.get("/:id",checkCar,wrapAsync(getReviewByCarId));
-router.post("/:id",checkCar,checkUser,validate(reviewJoiSchema),wrapAsync(addReview))
-router.patch("/:id", checkUser,validate(updateReviewJoiSchema),wrapAsync(updateReview))
-router.delete("/:id",checkUser,wrapAsync(deleteReview))
+router.route("/:id")
+.get(checkCar,wrapAsync(getReviewByCarId))
+.post(checkCar,checkUser,validate(reviewJoiSchema),wrapAsync(addReview))
+.patch( checkUser,validate(updateReviewJoiSchema),wrapAsync(updateReview))
+.delete(checkUser,wrapAsync(deleteReview))
 
 export default router;
