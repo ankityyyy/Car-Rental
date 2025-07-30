@@ -7,10 +7,7 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    
-    
-  },
-  
+  },  
   email: {
     type: String,
     required: true,
@@ -40,7 +37,16 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ["admin", "owner", "customer"],
     default: "customer"
-  }
+  },
+  profilePictureimage: {
+    filename: { type: String },
+    url: { type: String, default:"uploads/default.jpg"},
+  },
+  walletBalance: {
+    type: Number,
+    default: 0
+  },
+
 }, {
   timestamps: true 
 });
