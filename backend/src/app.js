@@ -5,6 +5,10 @@ import dotenv from "dotenv";
 dotenv.config();
 let dbUrl = "mongodb://127.0.0.1:27017/car";
 import ExpressError from "../src/utils/ExpressError.js";
+import path from "path";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 import userRoutes from "../src/routes/user.js";
 import { StatusCodes } from "http-status-codes";
 import passport from "./config/passport.js";
@@ -26,6 +30,7 @@ Main();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(passport.initialize());
 
 app.get("/",(req,res)=>{
