@@ -16,25 +16,43 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        const existingUser = await User.findOne({ providerId:profile.id });
+        const email = profile.emails?.[0]?.value;
+        const name = profile.displayName;
+        const providerId = profile.id;
+        const profilePicture = profile.photos?.[0]?.value;
 
-        if (existingUser) {
-          return done(null, existingUser);
+        
+        let user = await User.findOne({ email });
+
+        if (user) {
+          if (!user.providerId) {
+            user.provider = "google";
+            user.providerId = providerId;
+            await user.save();
+          }
+          return done(null, user);
         }
 
+     
         const newUser = new User({
-          email: profile.emails[0].value,
+          name,
+          email,
           provider: "google",
-          providerId: profile.id,
+          providerId,
+          profilePictureimage: {
+            url: profilePicture || "",
+          },
         });
+
         await newUser.save();
-        done(null, newUser);
+        return done(null, newUser);
       } catch (err) {
-          done(err, null);
+        return done(err, null);
       }
     }
   )
 );
+
 
 
 passport.use(new JwtStrategy({
