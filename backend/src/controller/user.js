@@ -56,3 +56,25 @@ if (!isPasswordCorrect) {
       role: foundUser.role,
     });
 };
+
+
+export const addProfileImage=async(req,res,next)=>{
+  if (!req.file) {
+      return next(new ExpressError("No file uploaded", StatusCodes.BAD_REQUEST));
+    }
+
+    let url = req.file.path;
+  let filename = req.file.filename;
+
+  const foundUser = req.user;
+   let id=foundUser._id;
+
+  let updateImage= await User.findByIdAndUpdate(id,{profilePictureimage:{ url, filename }},{
+    new: true,
+    runValidators: true,})
+     res.status(StatusCodes.OK).json({
+      message: "Profile image updated successfully",
+      user: updateImage,
+     })
+
+}
