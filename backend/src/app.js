@@ -16,6 +16,7 @@ import googleRoute from "./routes/google.js";
 import carRoute from "./routes/carRoutes.js";
 import carReviewRoute from "./routes/reviewRoutes.js"
 import bookingRoute from "./routes/bookingRoute.js"
+import session from "express-session";
 
 async function Main() {
   try {
@@ -31,7 +32,26 @@ Main();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+app.use(session({
+  secret:'your_default_secret_key_here',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production', 
+    httpOnly: true, 
+    maxAge: 1000 * 60 * 60 * 24 
+  }
+}));
 app.use(passport.initialize());
+app.use(passport.session());
+
+
+
+app.get("/login", (req, res) => {
+  res.redirect("/user/v1/api/google") 
+});
+
 
 app.get("/",(req,res)=>{
      res.send("it work ");
