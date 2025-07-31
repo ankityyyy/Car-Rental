@@ -6,12 +6,15 @@ import {roleMiddleware} from '../middleware/rolebasedMiddleWare.js';
 import {isLogin} from "../middleware/isLogin.js"
 import validate from "../middleware/userMiddleware.js";
 import {carAddSchema,updateCarSchema} from "../joiSchema/carJoiSchema.js"
+import multer from "multer";
+import {storage} from "../config/cloudinary.js";
+const upload = multer({ storage});
 
 
 router.route("/")
 .get(isLogin,wrapAsync(getAllCar));
 router.route('/new')
-.post(isLogin,validate(carAddSchema),roleMiddleware("admin", "owner"),wrapAsync(addCar));
+.post(upload.single("image"),isLogin,validate(carAddSchema),roleMiddleware("admin", "owner"),wrapAsync(addCar));
 router.route("/:id")
 .get(isLogin,wrapAsync(getCarById))
 .patch(isLogin,validate(updateCarSchema),roleMiddleware("admin", "owner"),wrapAsync(editCarData))
