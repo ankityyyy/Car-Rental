@@ -1,10 +1,24 @@
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
-import User from "../models/User.js";
+import User from "../models/user.js";
 import dotenv from "dotenv";
-dotenv.config(); 
+dotenv.config();
 
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+
+  try {
+    const user = await User.findById(id);
+    done(null, user); 
+  } catch (err) {
+    done(err);
+  }
+});
 
 
 passport.use(
@@ -13,15 +27,17 @@ passport.use(
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: process.env.GOOGLE_CALLBACK_URL,
+    
     },
     async (accessToken, refreshToken, profile, done) => {
+      console.log("Google profile", profile);
       try {
         const email = profile.emails?.[0]?.value;
         const name = profile.displayName;
         const providerId = profile.id;
         const profilePicture = profile.photos?.[0]?.value;
 
-        
+
         let user = await User.findOne({ email });
 
         if (user) {
@@ -33,7 +49,7 @@ passport.use(
           return done(null, user);
         }
 
-     
+
         const newUser = new User({
           name,
           email,
@@ -52,7 +68,6 @@ passport.use(
     }
   )
 );
-
 
 
 passport.use(new JwtStrategy({
