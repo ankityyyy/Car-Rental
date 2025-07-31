@@ -23,9 +23,17 @@ return res.status(StatusCodes.OK).json({ car: showCarById, message: "Car fetched
 export const addCar = async (req, res, next) => {
   const foundUser = req.user;
   let data= req.body;
+  if (!req.file) {
+        return next(new ExpressError("No file uploaded", StatusCodes.BAD_REQUEST));
+      }
+
+       let url = req.file.path;
+  let filename = req.file.filename;
+
 
   let  carData={
     title:data.title,
+    image:{url,filename},
     brand:data.brand,
     model:data.model,
      pricingType:data.pricingType,
