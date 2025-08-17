@@ -12,7 +12,7 @@ export const allBooking = async (req, res, next) => {
       startDate: { $gte: startOfDay, $lte: endOfDay }
     })
     .populate("userId", "name email")
-    .populate("carId", "title brand model");
+    .populate("carId", "title brand model image");
 
     return res.status(200).json({
       count: allBookingToday.length,
