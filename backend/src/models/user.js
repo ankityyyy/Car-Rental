@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
     return this.provider === "local";
   }
 },
-  providerName: {
+  provider: {
   type: String,  
   enum: ["local","google"], 
   default: "local"
