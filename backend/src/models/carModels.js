@@ -13,32 +13,26 @@ const carSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  pricingType: {
-    type: String,
-    enum: ["perDay", "perKm", "custom"],
-    required: true,
-  },
   
-  pricePerDay: {
-    type: Number, 
-  },
-  pricePerKm: {
-    type: Number, 
-  },
-  customPrice: {
-    type: Number, 
-  },
+  
+  pricePerDay: { type: Number, required: true },
+  pricePerKm: { type: Number, required: true },
+  customPrice: { type: Number, required: true },
+  
   availability: {
     type: Boolean,
-    default: true,
+   enum: ["available", "booked", "maintenance"],
+  default: "available",
   },
   seats: {
     type: Number,
-    default: 4,
+    default: 5,
+    min: 2,
+  max: 8,
   },
   fuelType: {
     type: String,
-    enum: ["petrol", "diesel", "electric"],
+    enum: ["petrol", "diesel", "electric", "hybrid", "cng"],
     required: true,
   },
   transmission: {
@@ -61,10 +55,12 @@ const carSchema = new mongoose.Schema({
     state: String,
     country: String,
   },
-  image: {
-    filename: { type: String },
-    url: { type: String,default:"uploads/default.jpg" },
+  image: [
+  {
+    filename: String,
+    url: { type: String, default: "uploads/default.jpg" },
   },
+],
   owner:{
     
         type: mongoose.Schema.Types.ObjectId,
